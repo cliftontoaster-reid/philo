@@ -6,7 +6,7 @@
 /*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 14:34:19 by lfiorell          #+#    #+#             */
-/*   Updated: 2025/04/03 11:34:07 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/04/03 15:42:15 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,9 +47,11 @@ typedef struct s_simulation
 	int				time_to_sleep;
 	int				time_to_die;
 	int				eat_limit;
-	t_philosopher	*philosophers;
+	t_philosopher	**philosophers;
+	int				finished_philosophers;
 	pthread_mutex_t	*forks;
-	pthread_mutex_t	print_mutex;
+	pthread_mutex_t	*print_mutex;
+	pthread_mutex_t	*death_check;
 }					t_simulation;
 
 typedef struct s_arg
@@ -57,6 +59,8 @@ typedef struct s_arg
 	t_philosopher	*philosopher;
 	t_simulation	*simulation;
 }					t_arg;
+
+void				cleanup(t_simulation *sim, t_arg **args);
 
 /// @brief Returns the current timestamp in milliseconds.
 /// @return The current timestamp in milliseconds.
@@ -95,6 +99,8 @@ void				*philosopher_routine(void *arg);
 ///	@param sim The simulation structure containing the mutex.
 ///	@param idx The index of the philosopher.
 ///	@param state The state of the philosopher.
-void				phi_print(t_simulation *sim, int idx, t_state state);
+int					phi_print(t_simulation *sim, int idx, t_state state,
+						t_philosopher *philosopher);
+int					usleep(long usec);
 
 #endif

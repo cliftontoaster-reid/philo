@@ -6,7 +6,7 @@
 /*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 11:26:52 by lfiorell          #+#    #+#             */
-/*   Updated: 2025/04/03 12:16:07 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/04/03 15:30:09 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ static int	setup_malocs(t_simulation *sim)
 {
 	int	i;
 
-	sim->philosophers = malloc(sizeof(t_philosopher) * sim->num_philosophers);
+	sim->philosophers = malloc(sizeof(t_philosopher *) * sim->num_philosophers);
 	if (!sim->philosophers)
 		return (0);
 	sim->forks = malloc(sizeof(pthread_mutex_t) * sim->num_philosophers);
@@ -60,13 +60,39 @@ static int	setup_malocs(t_simulation *sim)
 	{
 		if (pthread_mutex_init(&sim->forks[i], NULL) != 0)
 		{
-			free(sim->philosophers);
-			while (i > 0)
-				pthread_mutex_destroy(&sim->forks[--i]);
-			free(sim->forks);
+			sim->num_philosophers = i;
+			// cleanup
 			return (0);
 		}
 		i++;
+	}
+	sim->print_mutex = malloc(sizeof(pthread_mutex_t));
+	if (!sim->print_mutex)
+	{
+		free(sim->forks);
+		free(sim->philosophers);
+		return (0);
+	}
+	if (pthread_mutex_init(sim->print_mutex, NULL) != 0)
+	{
+		free(sim->print_mutex);
+		free(sim->forks);
+		free(sim->philosophers);
+		return (0);
+	}
+	sim->death_check = malloc(sizeof(pthread_mutex_t));
+	if (!sim->death_check)
+	{
+		free(sim->forks);
+		free(sim->philosophers);
+		return (0);
+	}
+	if (pthread_mutex_init(sim->death_check, NULL) != 0)
+	{
+		free(sim->death_check);
+		free(sim->forks);
+		free(sim->philosophers);
+		return (0);
 	}
 	return (1);
 }
@@ -94,12 +120,68 @@ t_simulation	*create_simulation(int argc, char **argv)
 		free(sim);
 		return (NULL);
 	}
+	if (!setup_malocs(sim))
+	{
+		free(sim);
+		return (NULL);
+	}
 	return (sim);
+}
+
+void	cleanup(t_simulation *sim, t_arg **args)
+{
+	int	i;
+
+	if (!sim)
+		return ;
+	// Clean up the print mutex
+	if (sim->print_mutex)
+	{
+		pthread_mutex_destroy(sim->print_mutex);
+		free(sim->print_mutex);
+	}
+	// Free the philosophers
+	if (sim->philosophers)
+	{
+		i = 0;
+		while (i < sim->num_philosophers)
+		{
+			if (sim->philosophers[i])
+				free(sim->philosophers[i]);
+			i++;
+		}
+		free(sim->philosophers);
+	}
+	// Destroy the forks
+	if (sim->forks)
+	{
+		i = 0;
+		while (i < sim->num_philosophers)
+		{
+			pthread_mutex_destroy(&sim->forks[i]);
+			i++;
+		}
+		free(sim->forks);
+	}
+	if (sim->death_check)
+	{
+		pthread_mutex_destroy(sim->death_check);
+		free(sim->death_check);
+	}
+	// Free the simulation itself
+	free(sim);
+	// Free any remaining args that weren't freed in main
+	if (args)
+	{
+		free(args);
+	}
 }
 
 int	main(int argc, char *argv[])
 {
 	t_simulation	*sim;
+	t_arg			**args;
+	int				i;
 
 	if (argc < 5 || argc > 6)
 	{
@@ -113,6 +195,47 @@ int	main(int argc, char *argv[])
 		printf("Error: Invalid arguments\n");
 		return (1);
 	}
-	free(sim);
+	// Allocate args array to keep track of all args
+	args = malloc(sizeof(t_arg *) * sim->num_philosophers);
+	if (!args)
+	{
+		// Cleanup
+		return (1);
+	}
+	// Initialize each philosopher and create threads
+	i = 0;
+	while (i < sim->num_philosophers)
+	{
+		sim->philosophers[i] = create_philosopher(i, sim);
+		args[i] = malloc(sizeof(t_arg));
+		if (!args[i])
+		{
+			// Clean up previously allocated memory
+			while (--i >= 0)
+				free(args[i]);
+			free(args);
+			// Cleanup
+			return (1);
+		}
+		args[i]->philosopher = sim->philosophers[i];
+		args[i]->simulation = sim;
+		if (pthread_create(&sim->philosophers[i]->thread, NULL,
+				philosopher_routine, args[i]) != 0)
+		{
+			// Cleanup
+			return (1);
+		}
+		i++;
+	}
+	// Join all threads separately after creation
+	i = 0;
+	while (i < sim->num_philosophers)
+	{
+		pthread_join(sim->philosophers[i]->thread, NULL);
+		free(args[i]);
+		i++;
+	}
+	// Wait until one philosopher dies, if so, end all threads
+	cleanup(sim, args);
 	return (0);
 }

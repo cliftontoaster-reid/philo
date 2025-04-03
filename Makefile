@@ -4,7 +4,7 @@ SRC_DIR = philo
 BONUS_DIR = philo_bonus
 OBJ_DIR = build
 
-CFLAGS = -Wall -Wextra -Werror -pedantic -std=c17
+CFLAGS = -Wall -Wextra -Werror -pedantic -std=c17 -O3 -g3
 LDFLAGS = -pedantic
 BASE_CFLAGS = -I$(SRC_DIR)
 BONUS_CFLAGS = -I$(BONUS_DIR)

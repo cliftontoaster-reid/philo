@@ -6,7 +6,7 @@
 /*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:53:32 by lfiorell          #+#    #+#             */
-/*   Updated: 2025/04/03 11:51:54 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/04/03 15:42:03 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,6 @@
 #include <string.h>
 #include <sys/time.h>
 #include <unistd.h>
-
-int				usleep(long usec);
 
 long	get_timestamp(void)
 {
@@ -29,21 +27,41 @@ long	get_timestamp(void)
 	return (timestamp);
 }
 
-void	phi_print(t_simulation *sim, int idx, t_state state)
+int	phi_print(t_simulation *sim, int idx, t_state state, t_philosopher *phi)
 {
 	char	*state_str;
+	int		should_print;
 
+	pthread_mutex_lock(sim->death_check);
+	if (sim->finished_philosophers > 0 && state != DIED)
+	{
+		pthread_mutex_unlock(phi->left_fork);
+		pthread_mutex_unlock(phi->right_fork);
+		pthread_mutex_unlock(sim->death_check);
+		return (1);
+	}
+	should_print = 1;
 	if (state == THINKING)
 		state_str = "is thinking";
 	else if (state == EATING)
 		state_str = "is eating";
 	else if (state == SLEEPING)
 		state_str = "is sleeping";
-	else
+	else if (state == DIED)
+	{
+		sim->finished_philosophers++;
 		state_str = "died";
-	pthread_mutex_lock(&sim->print_mutex);
-	printf("%ld %d %s\n", get_timestamp(), idx + 1, state_str);
-	pthread_mutex_unlock(&sim->print_mutex);
+	}
+	else
+		should_print = 0;
+	if (should_print)
+	{
+		pthread_mutex_lock(sim->print_mutex);
+		printf("%ld %d %s\n", get_timestamp(), idx + 1, state_str);
+		pthread_mutex_unlock(sim->print_mutex);
+	}
+	pthread_mutex_unlock(sim->death_check);
+	return (state == DIED || sim->finished_philosophers > 0);
 }
 
 t_philosopher	*create_philosopher(int id, t_simulation *sim)
@@ -70,12 +88,6 @@ t_philosopher	*create_philosopher(int id, t_simulation *sim)
 	return (philosopher);
 }
 
-void	free_philosopher(t_philosopher *philosopher)
-{
-	if (philosopher)
-		free(philosopher);
-}
-
 void	*philosopher_routine(void *arg)
 {
 	t_arg			*args;
@@ -85,33 +97,33 @@ void	*philosopher_routine(void *arg)
 	phi = args->philosopher;
 	while (1)
 	{
-		phi_print(args->simulation, phi->id, THINKING);
+		if (phi_print(args->simulation, phi->id, THINKING, phi))
+			return (NULL);
 		usleep(phi->time_to_think * 1000);
 		pthread_mutex_lock(phi->left_fork);
 		pthread_mutex_lock(phi->right_fork);
-		phi_print(args->simulation, phi->id, EATING);
-		if (phi->time_to_die - get_timestamp() > 0)
-		{
-			phi->last_nom = get_timestamp();
-			phi->eat_count++;
-			if (phi->eat_count >= phi->eat_limit)
-			{
-				pthread_mutex_unlock(phi->left_fork);
-				pthread_mutex_unlock(phi->right_fork);
-				return (NULL);
-			}
-		}
-		else
+		if (phi_print(args->simulation, phi->id, EATING, phi))
+			return (NULL);
+		if (get_timestamp() - phi->last_nom > phi->time_to_die)
 		{
 			pthread_mutex_unlock(phi->left_fork);
 			pthread_mutex_unlock(phi->right_fork);
-			phi_print(args->simulation, phi->id, DIED);
+			phi_print(args->simulation, phi->id, DIED, phi);
+			return (NULL);
+		}
+		phi->last_nom = get_timestamp();
+		phi->eat_count++;
+		if (phi->eat_count >= phi->eat_limit)
+		{
+			pthread_mutex_unlock(phi->left_fork);
+			pthread_mutex_unlock(phi->right_fork);
 			return (NULL);
 		}
 		usleep(phi->time_to_eat * 1000);
 		pthread_mutex_unlock(phi->right_fork);
 		pthread_mutex_unlock(phi->left_fork);
-		phi_print(args->simulation, phi->id, SLEEPING);
+		if (phi_print(args->simulation, phi->id, SLEEPING, phi))
+			return (NULL);
 		usleep(phi->time_to_sleep * 1000);
 	}
 	return (NULL);

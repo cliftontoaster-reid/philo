@@ -1,0 +1,42 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build (all)",
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "all"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "options": {
+                "env": {
+                    "CC": "clang"
+                }
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+        {
+            "label": "build (bonus)",
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "bonus"
+            ],
+            "group": "build",
+            "options": {
+                "env": {
+                    "CC": "clang"
+                }
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
+        }
+    ]
+}
