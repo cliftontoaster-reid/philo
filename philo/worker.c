@@ -6,13 +6,18 @@
 /*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:53:32 by lfiorell          #+#    #+#             */
-/*   Updated: 2025/04/03 11:36:29 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/04/03 11:51:54 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <sys/time.h>
+#include <unistd.h>
+
+int				usleep(long usec);
 
 long	get_timestamp(void)
 {
@@ -45,7 +50,7 @@ t_philosopher	*create_philosopher(int id, t_simulation *sim)
 {
 	t_philosopher	*philosopher;
 
-	philosopher = malloc(sizeof(t_philosopher));
+	philosopher = (t_philosopher *)malloc(sizeof(t_philosopher));
 	if (!philosopher)
 		return (NULL);
 	memset(philosopher, 0, sizeof(t_philosopher));

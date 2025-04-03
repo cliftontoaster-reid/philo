@@ -6,12 +6,13 @@
 /*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 11:26:52 by lfiorell          #+#    #+#             */
-/*   Updated: 2025/04/03 11:42:56 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/04/03 11:50:05 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 #include <limits.h>
+#include <stdlib.h>
 #include <string.h>
 
 static int	ft_strtoint(const char *str)
@@ -42,7 +43,7 @@ t_simulation	*create_simulation(int argc, char **argv)
 {
 	t_simulation	*sim;
 
-	sim = malloc(sizeof(t_simulation));
+	sim = (t_simulation *)malloc(sizeof(t_simulation));
 	if (!sim)
 		return (NULL);
 	memset(sim, 0, sizeof(t_simulation));

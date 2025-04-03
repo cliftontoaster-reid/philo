@@ -28,13 +28,13 @@ BONUS = \
 OBJ = $(addprefix $(OBJ_DIR)/, $(SRC:.c=.o))
 BONUS_OBJ = $(addprefix $(OBJ_DIR)/, $(BONUS:.c=.o))
 
-all: $(NAME)
-bonus: $(BONUS_NAME)
+all: $(NAME)/$(NAME)
+bonus: $(BONUS_NAME)/$(BONUS_NAME)
 
-$(NAME): $(OBJ)
+$(NAME)/$(NAME): $(OBJ)
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ $(BASE_CFLAGS)
 
-$(BONUS_NAME): $(BONUS_OBJ)
+$(BONUS_NAME)/$(BONUS_NAME): $(BONUS_OBJ)
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ $(BONUS_CFLAGS)
 
 $(OBJ_DIR)/%.o: %.c
