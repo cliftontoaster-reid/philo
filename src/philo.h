@@ -6,20 +6,27 @@
 /*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 14:34:19 by lfiorell          #+#    #+#             */
-/*   Updated: 2025/04/03 15:42:15 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/04/03 17:14:07 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PHILO_H
 # define PHILO_H
 
+# include <limits.h>
 # include <pthread.h>
+# include <stdio.h>
+# include <stdlib.h>
+# include <string.h>
+# include <sys/time.h>
+# include <unistd.h>
 
 typedef enum e_state
 {
 	THINKING,
 	EATING,
 	SLEEPING,
+	TAKING_FORK,
 	DIED
 }					t_state;
 
@@ -61,6 +68,8 @@ typedef struct s_arg
 }					t_arg;
 
 void				cleanup(t_simulation *sim, t_arg **args);
+int					ft_strtoint(const char *str);
+int					setup_malocs(t_simulation *sim);
 
 /// @brief Returns the current timestamp in milliseconds.
 /// @return The current timestamp in milliseconds.

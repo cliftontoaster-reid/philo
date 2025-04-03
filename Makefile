@@ -1,7 +1,7 @@
 CC = clang
 
-SRC_DIR = philo
-BONUS_DIR = philo_bonus
+SRC_DIR = src
+BONUS_DIR = src_bonus
 OBJ_DIR = build
 
 CFLAGS = -Wall -Wextra -Werror -pedantic -std=c17 -O3 -g3
@@ -26,6 +26,9 @@ BONUS_NAME = philo_bonus
 SRC = \
 	$(SRC_DIR)/philo.c \
 	$(SRC_DIR)/worker.c \
+	$(SRC_DIR)/utils.c \
+	$(SRC_DIR)/cleanup.c \
+	$(SRC_DIR)/setup.c \
 
 BONUS = \
 	$(BONUS_DIR)/philo.c \
@@ -34,15 +37,15 @@ BONUS = \
 OBJ = $(addprefix $(OBJ_DIR)/, $(SRC:.c=.o))
 BONUS_OBJ = $(addprefix $(OBJ_DIR)/, $(BONUS:.c=.o))
 
-all: $(NAME)/$(NAME)
-bonus: $(BONUS_NAME)/$(BONUS_NAME)
+all: $(NAME)
+bonus: $(BONUS_NAME)
 
-$(NAME)/$(NAME): $(OBJ)
+$(NAME): $(OBJ)
 	@echo -e "$(ORANGE)Linking $(BLUE)$@$(ORANGE)...$(RESET)"
 	@$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ $(BASE_CFLAGS)
 	@echo -e "$(GREEN)Linked $(BLUE)$@$(GREEN) successfully!$(RESET)"
 
-$(BONUS_NAME)/$(BONUS_NAME): $(BONUS_OBJ)
+$(BONUS_NAME): $(BONUS_OBJ)
 	@echo -e "$(ORANGE)Linking $(BLUE)$@$(ORANGE)...$(RESET)"
 	@$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ $(BONUS_CFLAGS)
 	@echo -e "$(GREEN)Linked $(BLUE)$@$(GREEN) successfully!$(RESET)"
@@ -64,8 +67,8 @@ clean:
 	@echo -e "$(GREEN)Cleaned object files from $(BLUE)$(OBJ_DIR)$(RESET)"
 
 fclean: clean
-	@rm -f $(NAME)/$(NAME)
-	@rm -f $(BONUS_NAME)/$(BONUS_NAME)
+	@rm -f $(NAME)
+	@rm -f $(BONUS_NAME)
 	@echo -e "$(GREEN)Cleaned executables $(BLUE)$(NAME)$(GREEN) and $(BLUE)$(BONUS_NAME)$(RESET)"
 
 re: fclean all

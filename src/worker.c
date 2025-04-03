@@ -6,62 +6,58 @@
 /*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:53:32 by lfiorell          #+#    #+#             */
-/*   Updated: 2025/04/03 15:42:03 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/04/03 17:18:31 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/time.h>
-#include <unistd.h>
 
-long	get_timestamp(void)
+static int	parse_arguments(t_simulation *sim, int argc, char **argv)
 {
-	struct timeval	tv;
-	long			timestamp;
-
-	gettimeofday(&tv, NULL);
-	timestamp = (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
-	return (timestamp);
+	sim->num_philosophers = ft_strtoint(argv[1]);
+	sim->time_to_die = ft_strtoint(argv[2]);
+	sim->time_to_eat = ft_strtoint(argv[3]);
+	sim->time_to_sleep = ft_strtoint(argv[4]);
+	if (argc == 6)
+		sim->eat_limit = ft_strtoint(argv[5]);
+	else
+		sim->eat_limit = INT_MAX;
+	if (sim->num_philosophers <= 0 || sim->time_to_die <= 0
+		|| sim->time_to_eat <= 0 || sim->time_to_sleep <= 0
+		|| sim->eat_limit <= 0)
+	{
+		return (0);
+	}
+	return (1);
 }
 
-int	phi_print(t_simulation *sim, int idx, t_state state, t_philosopher *phi)
+t_simulation	*create_simulation(int argc, char **argv)
 {
-	char	*state_str;
-	int		should_print;
+	t_simulation	*sim;
 
-	pthread_mutex_lock(sim->death_check);
-	if (sim->finished_philosophers > 0 && state != DIED)
+	sim = (t_simulation *)malloc(sizeof(t_simulation));
+	if (!sim)
+		return (NULL);
+	memset(sim, 0, sizeof(t_simulation));
+	if (!parse_arguments(sim, argc, argv))
 	{
-		pthread_mutex_unlock(phi->left_fork);
-		pthread_mutex_unlock(phi->right_fork);
-		pthread_mutex_unlock(sim->death_check);
-		return (1);
+		free(sim);
+		return (NULL);
 	}
-	should_print = 1;
-	if (state == THINKING)
-		state_str = "is thinking";
-	else if (state == EATING)
-		state_str = "is eating";
-	else if (state == SLEEPING)
-		state_str = "is sleeping";
-	else if (state == DIED)
+	if (sim->num_philosophers == 1)
 	{
-		sim->finished_philosophers++;
-		state_str = "died";
+		printf("%ld %d has taken a fork\n", get_timestamp(), 1);
+		usleep(sim->time_to_die * 1000);
+		printf("%ld %d died\n", get_timestamp(), 1);
+		cleanup(sim, NULL);
+		return ((void *)69);
 	}
-	else
-		should_print = 0;
-	if (should_print)
+	if (!setup_malocs(sim))
 	{
-		pthread_mutex_lock(sim->print_mutex);
-		printf("%ld %d %s\n", get_timestamp(), idx + 1, state_str);
-		pthread_mutex_unlock(sim->print_mutex);
+		free(sim);
+		return (NULL);
 	}
-	pthread_mutex_unlock(sim->death_check);
-	return (state == DIED || sim->finished_philosophers > 0);
+	return (sim);
 }
 
 t_philosopher	*create_philosopher(int id, t_simulation *sim)
@@ -88,6 +84,34 @@ t_philosopher	*create_philosopher(int id, t_simulation *sim)
 	return (philosopher);
 }
 
+static int	toeat(t_arg *args)
+{
+	t_philosopher	*phi;
+
+	phi = args->philosopher;
+	if (phi_print(args->simulation, phi->id, THINKING, phi))
+		return (1);
+	usleep(phi->time_to_think * 1000);
+	pthread_mutex_lock(phi->left_fork);
+	if (phi_print(args->simulation, phi->id, TAKING_FORK, phi))
+		return (1);
+	pthread_mutex_lock(phi->right_fork);
+	if (phi_print(args->simulation, phi->id, TAKING_FORK, phi))
+		return (1);
+	if (phi_print(args->simulation, phi->id, EATING, phi))
+		return (1);
+	if (get_timestamp() - phi->last_nom > phi->time_to_die)
+	{
+		pthread_mutex_unlock(phi->left_fork);
+		pthread_mutex_unlock(phi->right_fork);
+		phi_print(args->simulation, phi->id, DIED, phi);
+		return (1);
+	}
+	phi->last_nom = get_timestamp();
+	phi->eat_count++;
+	return (0);
+}
+
 void	*philosopher_routine(void *arg)
 {
 	t_arg			*args;
@@ -97,22 +121,8 @@ void	*philosopher_routine(void *arg)
 	phi = args->philosopher;
 	while (1)
 	{
-		if (phi_print(args->simulation, phi->id, THINKING, phi))
+		if (toeat(args))
 			return (NULL);
-		usleep(phi->time_to_think * 1000);
-		pthread_mutex_lock(phi->left_fork);
-		pthread_mutex_lock(phi->right_fork);
-		if (phi_print(args->simulation, phi->id, EATING, phi))
-			return (NULL);
-		if (get_timestamp() - phi->last_nom > phi->time_to_die)
-		{
-			pthread_mutex_unlock(phi->left_fork);
-			pthread_mutex_unlock(phi->right_fork);
-			phi_print(args->simulation, phi->id, DIED, phi);
-			return (NULL);
-		}
-		phi->last_nom = get_timestamp();
-		phi->eat_count++;
 		if (phi->eat_count >= phi->eat_limit)
 		{
 			pthread_mutex_unlock(phi->left_fork);
