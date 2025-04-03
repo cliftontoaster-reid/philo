@@ -9,6 +9,12 @@ LDFLAGS = -pedantic
 BASE_CFLAGS = -I$(SRC_DIR)
 BONUS_CFLAGS = -I$(BONUS_DIR)
 
+# Colors
+ORANGE = \033[33m
+GREEN = \033[32m
+BLUE = \033[34m
+RESET = \033[0m
+
 # If mold is available, use it for linking
 ifeq ($(shell command -v mold 2> /dev/null),)
 LDFLAGS += -fuse-ld=mold
@@ -32,36 +38,50 @@ all: $(NAME)/$(NAME)
 bonus: $(BONUS_NAME)/$(BONUS_NAME)
 
 $(NAME)/$(NAME): $(OBJ)
-	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ $(BASE_CFLAGS)
+	@echo -e "$(ORANGE)Linking $(BLUE)$@$(ORANGE)...$(RESET)"
+	@$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ $(BASE_CFLAGS)
+	@echo -e "$(GREEN)Linked $(BLUE)$@$(GREEN) successfully!$(RESET)"
 
 $(BONUS_NAME)/$(BONUS_NAME): $(BONUS_OBJ)
-	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ $(BONUS_CFLAGS)
+	@echo -e "$(ORANGE)Linking $(BLUE)$@$(ORANGE)...$(RESET)"
+	@$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ $(BONUS_CFLAGS)
+	@echo -e "$(GREEN)Linked $(BLUE)$@$(GREEN) successfully!$(RESET)"
 
 $(OBJ_DIR)/%.o: %.c
 	@mkdir -p $(OBJ_DIR)/$(dir $<)
-	$(CC) $(CFLAGS) $(BASE_CFLAGS) -c $< -o $@
+	@echo -e "$(ORANGE)Compiling $(BLUE)$<$(ORANGE) to $(BLUE)$@$(ORANGE)...$(RESET)"
+	@$(CC) $(CFLAGS) $(BASE_CFLAGS) -c $< -o $@
+	@echo -e "$(GREEN)Compiled $(BLUE)$<$(GREEN) successfully!$(RESET)"
 
 $(BONUS_OBJ_DIR)/%.o: %.c
 	@mkdir -p $(OBJ_DIR)/$(dir $<)
-	$(CC) $(CFLAGS) $(BONUS_CFLAGS) -c $< -o $@
+	@echo -e "$(ORANGE)Compiling $(BLUE)$<$(ORANGE) to $(BLUE)$@$(ORANGE)...$(RESET)"
+	@$(CC) $(CFLAGS) $(BONUS_CFLAGS) -c $< -o $@
+	@echo -e "$(GREEN)Compiled $(BLUE)$<$(GREEN) successfully!$(RESET)"
 
 clean:
-	rm -rf $(OBJ_DIR)
+	@rm -rf $(OBJ_DIR)
+	@echo -e "$(GREEN)Cleaned object files from $(BLUE)$(OBJ_DIR)$(RESET)"
 
 fclean: clean
-	rm -f $(NAME) $(BONUS_NAME)
+	@rm -f $(NAME)/$(NAME)
+	@rm -f $(BONUS_NAME)/$(BONUS_NAME)
+	@echo -e "$(GREEN)Cleaned executables $(BLUE)$(NAME)$(GREEN) and $(BLUE)$(BONUS_NAME)$(RESET)"
 
 re: fclean all
 
 fmt: ~/.cache/trunkexe
-	@echo "Formatting code..."
+	@echo -e "$(ORANGE)Formatting code...$(RESET)"
 	@~/.cache/trunkexe install
 	@~/.cache/trunkexe upgrade
 	@~/.cache/trunkexe fmt -a --verbose
+	@echo -e "$(GREEN)Formatting complete$(RESET)"
 
 ~/.cache/trunkexe:
 	@mkdir -p ~/.cache
+	@echo -e "$(ORANGE)Installing trunk...$(RESET)"
 	@wget https://trunk.io/releases/trunk -O ~/.cache/trunkexe
 	@chmod +x ~/.cache/trunkexe
+	@echo -e "$(GREEN)Installed trunk$(RESET)"
 
 .PHONY: all bonus clean fclean re fmt
