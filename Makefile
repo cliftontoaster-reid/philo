@@ -5,7 +5,7 @@ BONUS_DIR = src_bonus
 OBJ_DIR = build
 
 CFLAGS = -Wall -Wextra -Werror -pedantic -std=c17 -O3 -g3
-LDFLAGS = -pedantic
+LDFLAGS = -pedantic 
 BASE_CFLAGS = -I$(SRC_DIR)
 BONUS_CFLAGS = -I$(BONUS_DIR)
 

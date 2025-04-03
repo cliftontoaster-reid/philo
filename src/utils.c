@@ -6,13 +6,13 @@
 /*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 16:33:55 by lfiorell          #+#    #+#             */
-/*   Updated: 2025/04/03 17:14:28 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/04/03 17:50:32 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	ft_strtoint(const char *str)
+inline int	ft_strtoint(const char *str)
 {
 	int		i;
 	int		sign;
@@ -38,7 +38,7 @@ int	ft_strtoint(const char *str)
 	return ((int)(result * sign));
 }
 
-long	get_timestamp(void)
+inline long	get_timestamp(void)
 {
 	struct timeval	tv;
 	long			timestamp;
@@ -48,7 +48,7 @@ long	get_timestamp(void)
 	return (timestamp);
 }
 
-static char	*get_state_str(t_simulation *sim, t_state state)
+inline char	*get_state_str(t_simulation *sim, t_state state)
 {
 	if (state == THINKING)
 		return ("is thinking");
@@ -66,27 +66,25 @@ static char	*get_state_str(t_simulation *sim, t_state state)
 	return (NULL);
 }
 
-int	phi_print(t_simulation *sim, int idx, t_state state, t_philosopher *phi)
+inline int	phi_print(t_simulation *sim, int idx, t_state state,
+		t_philosopher *phi)
 {
 	char	*state_str;
 
-	pthread_mutex_lock(sim->death_check);
 	if (sim->finished_philosophers > 0 && state != DIED)
 	{
+		pthread_mutex_unlock(sim->print_mutex);
 		pthread_mutex_unlock(phi->left_fork);
 		pthread_mutex_unlock(phi->right_fork);
-		pthread_mutex_unlock(sim->death_check);
 		return (1);
 	}
 	state_str = get_state_str(sim, state);
-	if (!state_str)
+	pthread_mutex_lock(sim->print_mutex);
+	if (!state_str && sim->finished_philosophers == 0)
 	{
-		pthread_mutex_unlock(sim->death_check);
 		return (0);
 	}
-	pthread_mutex_lock(sim->print_mutex);
 	printf("%ld %d %s\n", get_timestamp(), idx + 1, state_str);
 	pthread_mutex_unlock(sim->print_mutex);
-	pthread_mutex_unlock(sim->death_check);
 	return (state == DIED || sim->finished_philosophers > 0);
 }

@@ -6,7 +6,7 @@
 /*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:53:32 by lfiorell          #+#    #+#             */
-/*   Updated: 2025/04/03 17:18:31 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/04/03 17:49:12 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ t_philosopher	*create_philosopher(int id, t_simulation *sim)
 	return (philosopher);
 }
 
-static int	toeat(t_arg *args)
+static inline int	toeat(t_arg *args)
 {
 	t_philosopher	*phi;
 
