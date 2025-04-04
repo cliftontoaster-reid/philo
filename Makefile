@@ -4,8 +4,14 @@ SRC_DIR = src
 BONUS_DIR = src_bonus
 OBJ_DIR = build
 
-CFLAGS = -Wall -Wextra -Werror -pedantic -std=c17 -O3 -g3
-LDFLAGS = -pedantic 
+# Performance optimization flags
+OPTFLAGS = -O3 -march=native -flto -fomit-frame-pointer -funroll-loops -fno-strict-aliasing -ffast-math
+CFLAGS = -Wall -Wextra -Werror -pedantic -std=c17 $(OPTFLAGS)
+LDFLAGS = -pedantic -flto -Wl,-O3 -Wl,--as-needed
+
+# Threading support
+LDFLAGS += -pthread
+
 BASE_CFLAGS = -I$(SRC_DIR)
 BONUS_CFLAGS = -I$(BONUS_DIR)
 
@@ -16,8 +22,12 @@ BLUE = \033[34m
 RESET = \033[0m
 
 # If mold is available, use it for linking
-ifeq ($(shell command -v mold 2> /dev/null),)
+ifneq ($(shell command -v mold 2> /dev/null),)
 LDFLAGS += -fuse-ld=mold
+endif
+# Check for ccache
+ifneq ($(shell command -v ccache 2> /dev/null),)
+CC := ccache clang
 endif
 
 NAME = philo

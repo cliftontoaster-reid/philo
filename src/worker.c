@@ -6,7 +6,7 @@
 /*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:53:32 by lfiorell          #+#    #+#             */
-/*   Updated: 2025/04/03 17:49:12 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/04/03 19:06:33 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,27 +87,34 @@ t_philosopher	*create_philosopher(int id, t_simulation *sim)
 static inline int	toeat(t_arg *args)
 {
 	t_philosopher	*phi;
+	pthread_mutex_t	*left;
+	pthread_mutex_t	*right;
+	long			now;
 
 	phi = args->philosopher;
+	left = phi->left_fork;
+	right = phi->right_fork;
 	if (phi_print(args->simulation, phi->id, THINKING, phi))
 		return (1);
-	usleep(phi->time_to_think * 1000);
-	pthread_mutex_lock(phi->left_fork);
+	if (phi->time_to_think)
+		usleep(phi->time_to_think * 1000);
+	pthread_mutex_lock(left);
 	if (phi_print(args->simulation, phi->id, TAKING_FORK, phi))
 		return (1);
-	pthread_mutex_lock(phi->right_fork);
+	pthread_mutex_lock(right);
 	if (phi_print(args->simulation, phi->id, TAKING_FORK, phi))
 		return (1);
 	if (phi_print(args->simulation, phi->id, EATING, phi))
 		return (1);
-	if (get_timestamp() - phi->last_nom > phi->time_to_die)
+	now = get_timestamp();
+	if (now - phi->last_nom > phi->time_to_die)
 	{
-		pthread_mutex_unlock(phi->left_fork);
-		pthread_mutex_unlock(phi->right_fork);
+		pthread_mutex_unlock(left);
+		pthread_mutex_unlock(right);
 		phi_print(args->simulation, phi->id, DIED, phi);
 		return (1);
 	}
-	phi->last_nom = get_timestamp();
+	phi->last_nom = now;
 	phi->eat_count++;
 	return (0);
 }
@@ -116,22 +123,26 @@ void	*philosopher_routine(void *arg)
 {
 	t_arg			*args;
 	t_philosopher	*phi;
+	pthread_mutex_t	*left;
+	pthread_mutex_t	*right;
 
 	args = (t_arg *)arg;
 	phi = args->philosopher;
+	left = phi->left_fork;
+	right = phi->right_fork;
 	while (1)
 	{
 		if (toeat(args))
 			return (NULL);
 		if (phi->eat_count >= phi->eat_limit)
 		{
-			pthread_mutex_unlock(phi->left_fork);
-			pthread_mutex_unlock(phi->right_fork);
+			pthread_mutex_unlock(left);
+			pthread_mutex_unlock(right);
 			return (NULL);
 		}
 		usleep(phi->time_to_eat * 1000);
-		pthread_mutex_unlock(phi->right_fork);
-		pthread_mutex_unlock(phi->left_fork);
+		pthread_mutex_unlock(right);
+		pthread_mutex_unlock(left);
 		if (phi_print(args->simulation, phi->id, SLEEPING, phi))
 			return (NULL);
 		usleep(phi->time_to_sleep * 1000);
