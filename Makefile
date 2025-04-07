@@ -42,6 +42,9 @@ SRC = \
 
 BONUS = \
 	$(BONUS_DIR)/philo.c \
+	$(BONUS_DIR)/utils.c \
+	$(BONUS_DIR)/cleanup.c \
+	$(BONUS_DIR)/setup.c \
 	$(BONUS_DIR)/worker.c \
 
 OBJ = $(addprefix $(OBJ_DIR)/, $(SRC:.c=.o))
