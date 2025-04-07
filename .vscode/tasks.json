@@ -8,10 +8,7 @@
             "args": [
                 "all"
             ],
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
+            "group": "build",
             "options": {
                 "env": {
                     "CC": "clang"

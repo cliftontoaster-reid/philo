@@ -5,9 +5,9 @@ BONUS_DIR = src_bonus
 OBJ_DIR = build
 
 # Performance optimization flags
-OPTFLAGS = -O3 -march=native -flto -fomit-frame-pointer -funroll-loops -fno-strict-aliasing -ffast-math
+OPTFLAGS = -O3 -march=native -flto -fomit-frame-pointer -funroll-loops -fno-strict-aliasing -ffast-math -g3
 CFLAGS = -Wall -Wextra -Werror -pedantic -std=c17 $(OPTFLAGS)
-LDFLAGS = -pedantic -flto -Wl,-O3 -Wl,--as-needed
+LDFLAGS = -pedantic -flto -Wl,-O3 -Wl,--as-needed -Wl,--gc-sections -Wl,--strip-all -Wl,--no-undefined -Wl,-z,relro -Wl,-z,now
 
 # Threading support
 LDFLAGS += -pthread

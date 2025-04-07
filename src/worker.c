@@ -6,7 +6,7 @@
 /*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:53:32 by lfiorell          #+#    #+#             */
-/*   Updated: 2025/04/03 19:06:33 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/04/04 16:42:48 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,6 @@ t_philosopher	*create_philosopher(int id, t_simulation *sim)
 	philosopher->time_to_sleep = sim->time_to_sleep;
 	philosopher->time_to_die = sim->time_to_die;
 	philosopher->left_fork = &sim->forks[id];
-	philosopher->last_nom = get_timestamp();
 	if (id == sim->num_philosophers - 1)
 		philosopher->right_fork = &sim->forks[0];
 	else
@@ -84,27 +83,19 @@ t_philosopher	*create_philosopher(int id, t_simulation *sim)
 	return (philosopher);
 }
 
-static inline int	toeat(t_arg *args)
+static int	toeat(t_arg *args, pthread_mutex_t *left, pthread_mutex_t *right)
 {
 	t_philosopher	*phi;
-	pthread_mutex_t	*left;
-	pthread_mutex_t	*right;
 	long			now;
 
 	phi = args->philosopher;
-	left = phi->left_fork;
-	right = phi->right_fork;
 	if (phi_print(args->simulation, phi->id, THINKING, phi))
 		return (1);
-	if (phi->time_to_think)
-		usleep(phi->time_to_think * 1000);
 	pthread_mutex_lock(left);
 	if (phi_print(args->simulation, phi->id, TAKING_FORK, phi))
 		return (1);
 	pthread_mutex_lock(right);
 	if (phi_print(args->simulation, phi->id, TAKING_FORK, phi))
-		return (1);
-	if (phi_print(args->simulation, phi->id, EATING, phi))
 		return (1);
 	now = get_timestamp();
 	if (now - phi->last_nom > phi->time_to_die)
@@ -114,6 +105,8 @@ static inline int	toeat(t_arg *args)
 		phi_print(args->simulation, phi->id, DIED, phi);
 		return (1);
 	}
+	if (phi_print(args->simulation, phi->id, EATING, phi))
+		return (1);
 	phi->last_nom = now;
 	phi->eat_count++;
 	return (0);
@@ -130,9 +123,10 @@ void	*philosopher_routine(void *arg)
 	phi = args->philosopher;
 	left = phi->left_fork;
 	right = phi->right_fork;
+	phi->last_nom = get_timestamp();
 	while (1)
 	{
-		if (toeat(args))
+		if (toeat(args, left, right))
 			return (NULL);
 		if (phi->eat_count >= phi->eat_limit)
 		{
