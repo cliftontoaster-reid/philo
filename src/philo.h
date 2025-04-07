@@ -6,7 +6,7 @@
 /*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 14:34:19 by lfiorell          #+#    #+#             */
-/*   Updated: 2025/04/03 17:14:07 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/04/07 13:27:16 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,8 +54,9 @@ typedef struct s_simulation
 	int				time_to_sleep;
 	int				time_to_die;
 	int				eat_limit;
-	t_philosopher	**philosophers;
 	int				finished_philosophers;
+
+	t_philosopher	**philosophers;
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	*print_mutex;
 	pthread_mutex_t	*death_check;
