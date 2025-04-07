@@ -6,7 +6,7 @@
 /*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 14:34:19 by lfiorell          #+#    #+#             */
-/*   Updated: 2025/04/07 13:27:16 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/04/07 13:33:33 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ typedef struct s_simulation
 	int				time_to_die;
 	int				eat_limit;
 	int				finished_philosophers;
+	long			start_time;
 
 	t_philosopher	**philosophers;
 	pthread_mutex_t	*forks;
@@ -74,7 +75,7 @@ int					setup_malocs(t_simulation *sim);
 
 /// @brief Returns the current timestamp in milliseconds.
 /// @return The current timestamp in milliseconds.
-long				get_timestamp(void);
+long				get_timestamp(t_simulation *sim);
 
 /// @brief Allocates memory for a philosopher and initializes its attributes.
 /// @param id The ID of the philosopher.

@@ -6,7 +6,7 @@
 /*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:53:32 by lfiorell          #+#    #+#             */
-/*   Updated: 2025/04/04 16:42:48 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/04/07 13:37:30 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,8 @@ static int	parse_arguments(t_simulation *sim, int argc, char **argv)
 		sim->eat_limit = ft_strtoint(argv[5]);
 	else
 		sim->eat_limit = INT_MAX;
-	if (sim->num_philosophers <= 0 || sim->time_to_die <= 0
-		|| sim->time_to_eat <= 0 || sim->time_to_sleep <= 0
+	if (sim->num_philosophers < 1 || sim->time_to_die < 60
+		|| sim->time_to_eat < 60 || sim->time_to_sleep < 60
 		|| sim->eat_limit <= 0)
 	{
 		return (0);
@@ -46,9 +46,9 @@ t_simulation	*create_simulation(int argc, char **argv)
 	}
 	if (sim->num_philosophers == 1)
 	{
-		printf("%ld %d has taken a fork\n", get_timestamp(), 1);
+		printf("%ld %d has taken a fork\n", get_timestamp(sim), 1);
 		usleep(sim->time_to_die * 1000);
-		printf("%ld %d died\n", get_timestamp(), 1);
+		printf("%ld %d died\n", get_timestamp(sim), 1);
 		cleanup(sim, NULL);
 		return ((void *)69);
 	}
@@ -97,7 +97,7 @@ static int	toeat(t_arg *args, pthread_mutex_t *left, pthread_mutex_t *right)
 	pthread_mutex_lock(right);
 	if (phi_print(args->simulation, phi->id, TAKING_FORK, phi))
 		return (1);
-	now = get_timestamp();
+	now = get_timestamp(args->simulation);
 	if (now - phi->last_nom > phi->time_to_die)
 	{
 		pthread_mutex_unlock(left);
@@ -123,7 +123,7 @@ void	*philosopher_routine(void *arg)
 	phi = args->philosopher;
 	left = phi->left_fork;
 	right = phi->right_fork;
-	phi->last_nom = get_timestamp();
+	phi->last_nom = get_timestamp(args->simulation);
 	while (1)
 	{
 		if (toeat(args, left, right))
