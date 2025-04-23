@@ -6,7 +6,7 @@
 /*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 15:22:19 by lfiorell          #+#    #+#             */
-/*   Updated: 2025/04/23 17:16:04 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/04/23 17:38:57 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,5 +123,10 @@ void				print_usage(void);
 /// @brief Prototype for internal initialization of philosopher structures and forks
 /// @param data A pointer to the data structure
 void				setup_malocs(t_data *data);
+
+/// @brief Allocates resources for the philosopher simulation
+/// @param data A pointer to the data structure
+/// @return A boolean indicating success or failure
+bool				allocate_resources(t_data *data);
 
 #endif
