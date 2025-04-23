@@ -6,7 +6,7 @@
 /*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 15:22:19 by lfiorell          #+#    #+#             */
-/*   Updated: 2025/04/23 17:38:57 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/04/23 17:41:37 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,7 +120,8 @@ long				phi_wait(long duration, t_philo *philo);
 /// Now go get me a stick so I can beat you.
 void				print_usage(void);
 
-/// @brief Prototype for internal initialization of philosopher structures and forks
+/// @brief Prototype for internal initialization of p
+/// 	hilosopher structures and forks
 /// @param data A pointer to the data structure
 void				setup_malocs(t_data *data);
 
