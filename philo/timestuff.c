@@ -6,7 +6,7 @@
 /*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:53:38 by lfiorell          #+#    #+#             */
-/*   Updated: 2025/04/15 16:19:06 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/04/24 15:03:16 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,9 +29,9 @@ long	get_time(t_data *data)
 {
 	long	time;
 
-	pthread_mutex_lock(data->print_mutex);
+	pthread_mutex_lock(data->time_mutex);
 	time = data->time;
-	pthread_mutex_unlock(data->print_mutex);
+	pthread_mutex_unlock(data->time_mutex);
 	return (time);
 }
 
@@ -52,10 +52,10 @@ long	phi_wait(long duration, t_philo *philo)
 		elapsed = (current.tv_sec - start.tv_sec) * 1000;
 		elapsed += (current.tv_usec - start.tv_usec) / 1000;
 	}
-	pthread_mutex_lock(philo->data->print_mutex);
+	pthread_mutex_lock(philo->data->time_mutex);
 	philo->local_time += duration;
 	if (philo->local_time > philo->data->time)
 		philo->data->time = philo->local_time;
-	pthread_mutex_unlock(philo->data->print_mutex);
+	pthread_mutex_unlock(philo->data->time_mutex);
 	return (philo->local_time);
 }
