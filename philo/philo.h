@@ -6,7 +6,7 @@
 /*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 15:22:19 by lfiorell          #+#    #+#             */
-/*   Updated: 2025/04/23 17:41:37 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/04/24 15:27:40 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,5 +129,9 @@ void				setup_malocs(t_data *data);
 /// @param data A pointer to the data structure
 /// @return A boolean indicating success or failure
 bool				allocate_resources(t_data *data);
+
+/// @brief Prints the t_data structure in YAML format
+/// @param data A pointer to the data structure
+void				print_data_yaml(t_data *data);
 
 #endif
