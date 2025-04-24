@@ -6,7 +6,7 @@
 /*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:33:24 by lfiorell          #+#    #+#             */
-/*   Updated: 2025/04/15 17:21:30 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/04/24 16:38:54 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@ char	*get_state_string(t_philo_state state)
 		return ("is sleeping");
 	else if (state == DEAD)
 		return ("died");
+	else if (state == FORK)
+		return ("has taken a fork");
 	else
 		return ("exploded or something, I don't know");
 }
