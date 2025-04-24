@@ -6,7 +6,7 @@
 /*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 16:01:19 by lfiorell          #+#    #+#             */
-/*   Updated: 2025/04/24 16:24:13 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/04/24 16:25:53 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,10 +75,14 @@ static void	print_addresses(t_data *d)
 
 void	print_data_yaml(t_data *d)
 {
+	pthread_mutex_lock(d->print_mutex);
+	pthread_mutex_lock(d->time_mutex);
 	print_data_overview(d);
 	print_philos_list(d);
 	print_forks_list(d);
 	printf("  print_mutex: print_mutex\n");
 	printf("  time_mutex: time_mutex\n");
 	print_addresses(d);
+	pthread_mutex_unlock(d->time_mutex);
+	pthread_mutex_unlock(d->print_mutex);
 }
