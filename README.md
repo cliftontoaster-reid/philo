@@ -149,4 +149,3 @@ This project is dual-licensed under both MIT and Apache 2.0 licence. Choose the 
 - Trademark use not granted
 - No liability
 - No warranty
-
