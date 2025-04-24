@@ -6,7 +6,7 @@
 /*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 13:59:03 by lfiorell          #+#    #+#             */
-/*   Updated: 2025/04/23 17:38:49 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/04/24 15:03:36 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ inline bool	valid_int(t_data *data)
 	return (true);
 }
 
-static bool	allocate_resources(t_data *data)
+bool	allocate_resources(t_data *data)
 {
 	int	i;
 
@@ -99,7 +99,7 @@ void	setup_malocs(t_data *data)
 	}
 	data->time_mutex = malloc(sizeof(pthread_mutex_t));
 	if (!data->time_mutex)
-		return (cleanup(data), false);
+		return (cleanup(data));
 	pthread_mutex_init(data->print_mutex, NULL);
 	pthread_mutex_init(data->time_mutex, NULL);
 }
