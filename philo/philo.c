@@ -6,7 +6,7 @@
 /*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 15:22:22 by lfiorell          #+#    #+#             */
-/*   Updated: 2025/04/25 10:50:45 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/04/25 13:18:07 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,14 @@ int	main(int argc, char const *argv[])
 	data = init_simulation(argc, argv);
 	if (!data)
 		return (1);
+	if (data->num_philos == 1)
+	{
+		print(data->philos[0], FORK);
+		usleep(data->time_to_die * 1000);
+		print(data->philos[0], DEAD);
+		cleanup(data);
+		return (0);
+	}
 	threads = spawn_philosophers(data);
 	join_and_free(threads, data);
 	cleanup(data);
