@@ -6,7 +6,7 @@
 /*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 12:02:47 by lfiorell          #+#    #+#             */
-/*   Updated: 2025/04/25 10:43:56 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/04/25 10:51:30 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,17 @@ inline bool	handle_oof(t_philo *philo)
 	return (false || philo->data->dead_people > 0);
 }
 
-inline void	phi_think(t_philo *philo)
+static inline bool	check_max_meals(t_philo *philo)
 {
-	print(philo, THINKING);
+	if (philo->data->max_meals >= 0
+		&& philo->meals_eaten >= philo->data->max_meals)
+	{
+		philo->data->stop = true;
+		pthread_mutex_unlock(philo->right_fork);
+		pthread_mutex_unlock(philo->left_fork);
+		return (true);
+	}
+	return (false);
 }
 
 static void	phi_nomnomnom(t_philo *philo)
@@ -52,23 +60,32 @@ static void	phi_nomnomnom(t_philo *philo)
 	pthread_mutex_unlock(philo->data->time_mutex);
 	print(philo, EATING);
 	philo->meals_eaten++;
-	if (philo->data->max_meals >= 0
-		&& philo->meals_eaten >= philo->data->max_meals)
-	{
-		philo->data->stop = true;
-		pthread_mutex_unlock(philo->right_fork);
-		pthread_mutex_unlock(philo->left_fork);
+	if (check_max_meals(philo))
 		return ;
-	}
 	phi_wait(philo->data->time_to_eat, philo);
 	pthread_mutex_unlock(philo->right_fork);
 	pthread_mutex_unlock(philo->left_fork);
 }
 
-void	phi_mimimimimi(t_philo *philo)
+void	*phi_mimimimimi(t_philo *philo)
 {
+	if (philo->data->stop)
+		return (NULL);
+	if (handle_oof(philo))
+		return (NULL);
+	print(philo, THINKING);
+	if (philo->data->stop)
+		return (NULL);
+	phi_nomnomnom(philo);
+	if (philo->data->stop)
+		return (NULL);
+	if (handle_oof(philo))
+		return (NULL);
+	if (philo->data->stop)
+		return (NULL);
 	print(philo, SLEEPING);
 	phi_wait(philo->data->time_to_sleep, philo);
+	return ((void *)1);
 }
 
 void	*philo_routine(t_philo *philo)
@@ -87,21 +104,8 @@ void	*philo_routine(t_philo *philo)
 		usleep(1000);
 	while (true)
 	{
-		if (philo->data->stop)
+		if (phi_mimimimimi(philo) == NULL)
 			return (NULL);
-		if (handle_oof(philo))
-			return (NULL);
-		phi_think(philo);
-		if (philo->data->stop)
-			return (NULL);
-		phi_nomnomnom(philo);
-		if (philo->data->stop)
-			return (NULL);
-		if (handle_oof(philo))
-			return (NULL);
-		if (philo->data->stop)
-			return (NULL);
-		phi_mimimimimi(philo);
 	}
 	return (NULL);
 }

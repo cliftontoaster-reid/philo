@@ -6,49 +6,75 @@
 /*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 15:22:22 by lfiorell          #+#    #+#             */
-/*   Updated: 2025/04/24 16:35:11 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/04/25 10:50:45 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	main(int argc, char const *argv[])
+static inline t_data	*init_simulation(int argc, char const *argv[])
 {
-	t_data		*data;
-	int			i;
-	pthread_t	*threads;
+	t_data	*data;
 
 	if (argc < 5 || argc > 6)
 	{
 		print_usage();
-		return (1);
+		return (NULL);
 	}
 	data = init(argc, (char **)argv);
 	if (!data)
 	{
 		print_usage();
-		return (1);
+		return (NULL);
 	}
 	setup_malocs(data);
 	print_data_yaml(data);
-	i = 0;
+	return (data);
+}
+
+static inline pthread_t	*spawn_philosophers(t_data *data)
+{
+	int			i;
+	pthread_t	*threads;
+
 	threads = malloc(sizeof(pthread_t) * data->num_philos);
-	if (threads)
+	if (!threads)
+		return (NULL);
+	i = 0;
+	while (i < data->num_philos)
 	{
-		while (i < data->num_philos)
-		{
-			pthread_create(&threads[i], NULL, (void *(*)(void *))philo_routine,
-				data->philos[i]);
-			i++;
-		}
-		i = 0;
-		while (i < data->num_philos)
-		{
-			pthread_join(threads[i], NULL);
-			i++;
-		}
-		free(threads);
+		pthread_create(&threads[i], NULL, (void *(*)(void *))philo_routine,
+			data->philos[i]);
+		i++;
 	}
+	return (threads);
+}
+
+static inline void	join_and_free(pthread_t *threads, t_data *data)
+{
+	int	i;
+
+	if (!threads)
+		return ;
+	i = 0;
+	while (i < data->num_philos)
+	{
+		pthread_join(threads[i], NULL);
+		i++;
+	}
+	free(threads);
+}
+
+int	main(int argc, char const *argv[])
+{
+	t_data		*data;
+	pthread_t	*threads;
+
+	data = init_simulation(argc, argv);
+	if (!data)
+		return (1);
+	threads = spawn_philosophers(data);
+	join_and_free(threads, data);
 	cleanup(data);
 	return (threads == NULL);
 }
