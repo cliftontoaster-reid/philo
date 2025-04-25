@@ -6,7 +6,7 @@
 /*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 12:02:47 by lfiorell          #+#    #+#             */
-/*   Updated: 2025/04/25 10:51:30 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/04/25 13:09:35 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,6 @@ static void	phi_nomnomnom(t_philo *philo)
 		pthread_mutex_lock(philo->left_fork);
 		print(philo, FORK);
 	}
-	// update last meal timestamp
 	philo->last_meal_time = get_time(philo->data);
 	print(philo, EATING);
 	philo->meals_eaten++;
