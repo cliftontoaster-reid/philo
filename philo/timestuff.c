@@ -6,7 +6,7 @@
 /*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:53:38 by lfiorell          #+#    #+#             */
-/*   Updated: 2025/04/24 15:03:16 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/04/25 13:08:48 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,11 @@
 
 bool	is_dead(t_philo *philo, t_data *data)
 {
-	if (philo->meals_eaten >= data->max_meals)
+	if (philo->data->stop)
 		return (false);
 	if (get_time(data) - philo->last_meal_time > data->time_to_die)
 	{
-		print(philo, DEAD);
+		data->stop = true;
 		return (true);
 	}
 	return (false);

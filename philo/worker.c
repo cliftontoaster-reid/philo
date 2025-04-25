@@ -55,9 +55,8 @@ static void	phi_nomnomnom(t_philo *philo)
 		pthread_mutex_lock(philo->left_fork);
 		print(philo, FORK);
 	}
-	pthread_mutex_lock(philo->data->time_mutex);
-	philo->last_meal_time = philo->data->time;
-	pthread_mutex_unlock(philo->data->time_mutex);
+	// update last meal timestamp
+	philo->last_meal_time = get_time(philo->data);
 	print(philo, EATING);
 	philo->meals_eaten++;
 	if (check_max_meals(philo))
@@ -90,9 +89,8 @@ void	*phi_mimimimimi(t_philo *philo)
 
 void	*philo_routine(t_philo *philo)
 {
-	pthread_mutex_lock(philo->data->time_mutex);
-	philo->last_meal_time = philo->data->time;
-	pthread_mutex_unlock(philo->data->time_mutex);
+	// initialize last meal time with current timestamp
+	philo->last_meal_time = get_time(philo->data);
 	if (philo->data->num_philos == 1)
 	{
 		print(philo, FORK);
