@@ -6,7 +6,7 @@
 /*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 13:59:03 by lfiorell          #+#    #+#             */
-/*   Updated: 2025/04/24 15:03:36 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/04/25 10:43:56 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,6 +120,7 @@ t_data	*init(int argc, char **argv)
 		data->max_meals = strtoint(argv[5]);
 	else
 		data->max_meals = INT_MAX;
+	data->stop = false;  // initialize stop flag
 	if (!valid_int(data))
 	{
 		free(data);

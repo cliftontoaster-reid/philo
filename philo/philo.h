@@ -6,7 +6,7 @@
 /*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 15:22:19 by lfiorell          #+#    #+#             */
-/*   Updated: 2025/04/24 15:27:40 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/04/25 10:43:56 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,8 @@ typedef struct s_data
 	int				time_to_die;
 	/// @brief The number of meals each philosopher must eat before terminating
 	int				max_meals;
+	/// @brief Flag to indicate simulation should stop when max meals reached
+	bool			stop;
 	/// @brief The current time in milliseconds
 	long			time;
 
