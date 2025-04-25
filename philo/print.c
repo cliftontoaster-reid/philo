@@ -6,7 +6,7 @@
 /*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:33:24 by lfiorell          #+#    #+#             */
-/*   Updated: 2025/04/24 16:38:54 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/04/25 09:28:20 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,8 @@ void	print(t_philo *philo, t_philo_state state)
 	char	*str;
 
 	pthread_mutex_lock(philo->data->print_mutex);
-	if (!is_dead(philo, philo->data))
+	// always allow printing a death event, otherwise only print if not dead
+	if (state == DEAD || !is_dead(philo, philo->data))
 	{
 		str = get_state_string(state);
 		printf("%ld %d %s\n", get_time(philo->data), philo->id, str);
