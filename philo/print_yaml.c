@@ -81,7 +81,7 @@ static void	print_addresses(t_data *d)
 
 void	print_data_yaml(t_data *d)
 {
-	if (false) // Consider removing this if it's always false
+	if (false)
 		return ;
 	pthread_mutex_lock(d->print_mutex);
 	pthread_mutex_lock(d->time_mutex);
