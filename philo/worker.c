@@ -6,7 +6,7 @@
 /*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 12:02:47 by lfiorell          #+#    #+#             */
-/*   Updated: 2025/04/26 14:56:17 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/04/26 15:13:49 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,7 @@ inline bool	handle_oof(t_philo *philo)
 
 static inline bool	check_max_meals(t_philo *philo)
 {
-	if (philo->data->max_meals >= 0
-		&& philo->meals_eaten >= philo->data->max_meals)
+	if (philo->meals_eaten >= philo->data->max_meals)
 	{
 		philo->data->stop = true;
 		pthread_mutex_unlock(philo->right_fork);
