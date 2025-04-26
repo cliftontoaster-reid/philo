@@ -6,7 +6,7 @@
 /*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:33:24 by lfiorell          #+#    #+#             */
-/*   Updated: 2025/04/25 10:48:19 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/04/26 14:57:17 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,13 +31,21 @@ char	*get_state_string(t_philo_state state)
 void	print(t_philo *philo, t_philo_state state)
 {
 	char	*str;
+	bool	is_d;
 
 	pthread_mutex_lock(philo->data->print_mutex);
-	if (state == DEAD || !is_dead(philo, philo->data))
+	if (philo->data->stop)
 	{
-		str = get_state_string(state);
-		printf("%ld %d %s\n", get_time(philo->data), philo->id, str);
+		pthread_mutex_unlock(philo->data->print_mutex);
+		return ;
 	}
+	is_d = is_dead(philo, philo->data);
+	if (is_d)
+		state = DEAD;
+	str = get_state_string(state);
+	printf("%ld %d %s\n", get_time(philo->data), philo->id, str);
+	if (state == DEAD)
+		philo->data->stop = true;
 	pthread_mutex_unlock(philo->data->print_mutex);
 }
 

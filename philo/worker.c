@@ -6,7 +6,7 @@
 /*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 12:02:47 by lfiorell          #+#    #+#             */
-/*   Updated: 2025/04/25 13:09:35 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/04/26 14:56:17 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@ inline bool	handle_oof(t_philo *philo)
 	oof = is_dead(philo, philo->data);
 	if (oof)
 	{
-		print(philo, DEAD);
 		philo->data->dead_people++;
+		print(philo, DEAD);
 		return (true);
 	}
 	return (false || philo->data->dead_people > 0);
