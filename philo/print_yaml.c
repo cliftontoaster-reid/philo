@@ -6,7 +6,7 @@
 /*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 16:01:19 by lfiorell          #+#    #+#             */
-/*   Updated: 2025/04/26 15:04:58 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/04/26 15:10:22 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,9 @@ static void	print_data_overview(t_data *d)
 	fprintf(stderr, "    time: %ld\n", d->time);
 	fprintf(stderr, "    dead_people: %d\n", d->dead_people);
 	if (d->stop)
-		fprintf(stderr, "  stop: true\n");
+		fprintf(stderr, "    stop: true\n");
 	else
-		fprintf(stderr, "  stop: false\n");
+		fprintf(stderr, "    stop: false\n");
 }
 
 static void	print_philos_list(t_data *d)
@@ -35,7 +35,7 @@ static void	print_philos_list(t_data *d)
 	t_philo	*p;
 	int		idx;
 
-	fprintf(stderr, "  philos:\n");
+	fprintf(stderr, "    philos:\n");
 	i = 0;
 	while (i < d->num_philos)
 	{
@@ -55,11 +55,11 @@ static void	print_forks_list(t_data *d)
 {
 	int	i;
 
-	fprintf(stderr, "  forks:\n");
+	fprintf(stderr, "    forks:\n");
 	i = 0;
 	while (i < d->num_philos)
 	{
-		fprintf(stderr, "    - fork%d\n", i);
+		fprintf(stderr, "      - fork%d\n", i);
 		++i;
 	}
 }
@@ -68,28 +68,28 @@ static void	print_addresses(t_data *d)
 {
 	int	i;
 
-	fprintf(stderr, "  addresses:\n");
+	fprintf(stderr, "    addresses:\n");
 	i = 0;
 	while (i < d->num_philos)
 	{
-		fprintf(stderr, "    fork%d: %p\n", i, (void *)d->forks[i]);
+		fprintf(stderr, "      fork%d: %p\n", i, (void *)d->forks[i]);
 		++i;
 	}
-	fprintf(stderr, "    print_mutex: %p\n", (void *)d->print_mutex);
-	fprintf(stderr, "    time_mutex: %p\n", (void *)d->time_mutex);
+	fprintf(stderr, "      print_mutex: %p\n", (void *)d->print_mutex);
+	fprintf(stderr, "      time_mutex: %p\n", (void *)d->time_mutex);
 }
 
 void	print_data_yaml(t_data *d)
 {
-	if (true)
+	if (false) // Consider removing this if it's always false
 		return ;
 	pthread_mutex_lock(d->print_mutex);
 	pthread_mutex_lock(d->time_mutex);
 	print_data_overview(d);
 	print_philos_list(d);
 	print_forks_list(d);
-	fprintf(stderr, "  print_mutex: print_mutex\n");
-	fprintf(stderr, "  time_mutex: time_mutex\n");
+	fprintf(stderr, "    print_mutex: print_mutex\n");
+	fprintf(stderr, "    time_mutex: time_mutex\n");
 	print_addresses(d);
 	pthread_mutex_unlock(d->time_mutex);
 	pthread_mutex_unlock(d->print_mutex);
