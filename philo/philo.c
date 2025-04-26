@@ -6,7 +6,7 @@
 /*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 15:22:22 by lfiorell          #+#    #+#             */
-/*   Updated: 2025/04/26 14:57:35 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/04/26 15:42:59 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,19 +67,18 @@ static inline void	join_and_free(pthread_t *threads, t_data *data)
 
 static inline void	wait_n_print(t_data *data)
 {
-	bool should_break ;
+	bool	should_break;
+
 	while (true)
 	{
 		pthread_mutex_lock(data->print_mutex);
 		should_break = (data->dead_people > 0 || data->stop);
 		pthread_mutex_unlock(data->print_mutex);
-			// Unlock *before* checking break condition
 		if (should_break)
 			break ;
-		usleep(100); // Avoid busy waiting
+		usleep(100);
 	}
-	// Mutex is guaranteed to be unlocked here
-	print_data_yaml(data); // Locks and unlocks its own mutexes
+	print_data_yaml(data);
 }
 
 int	main(int argc, char const *argv[])

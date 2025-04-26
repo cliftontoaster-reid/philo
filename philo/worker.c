@@ -6,7 +6,7 @@
 /*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 12:02:47 by lfiorell          #+#    #+#             */
-/*   Updated: 2025/04/26 15:29:18 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/04/26 15:43:17 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,6 @@ void	*phi_mimimimimi(t_philo *philo)
 
 void	*philo_routine(t_philo *philo)
 {
-	// initialize last meal time with current timestamp
 	philo->last_meal_time = get_time(philo->data);
 	if (philo->data->num_philos == 1)
 	{
