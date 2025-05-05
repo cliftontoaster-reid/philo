@@ -6,7 +6,7 @@
 /*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 16:01:19 by lfiorell          #+#    #+#             */
-/*   Updated: 2025/04/26 15:10:22 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/05/05 15:19:03 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ static void	print_addresses(t_data *d)
 
 void	print_data_yaml(t_data *d)
 {
-	if (false)
+	if (true)
 		return ;
 	pthread_mutex_lock(d->print_mutex);
 	pthread_mutex_lock(d->time_mutex);
