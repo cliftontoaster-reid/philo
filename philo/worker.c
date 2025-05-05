@@ -6,7 +6,7 @@
 /*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 12:02:47 by lfiorell          #+#    #+#             */
-/*   Updated: 2025/04/26 15:43:17 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/05/05 15:24:09 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,11 +35,13 @@ static inline bool	check_max_meals(t_philo *philo)
 	i = 0;
 	while (i < philo->data->num_philos)
 	{
+		pthread_mutex_lock(philo->data->time_mutex);
 		if (philo->data->philos[i]->meals_eaten < philo->data->max_meals)
 		{
 			pthread_mutex_unlock(philo->data->time_mutex);
 			return (false);
 		}
+		pthread_mutex_unlock(philo->data->time_mutex);
 		i++;
 	}
 	philo->data->stop = true;
@@ -66,7 +68,9 @@ static void	phi_nomnomnom(t_philo *philo)
 	}
 	philo->last_meal_time = get_time(philo->data);
 	print(philo, EATING);
+	pthread_mutex_lock(philo->data->time_mutex);
 	philo->meals_eaten++;
+	pthread_mutex_unlock(philo->data->time_mutex);
 	if (check_max_meals(philo))
 		return ;
 	phi_wait(philo->data->time_to_eat, philo);
@@ -76,19 +80,19 @@ static void	phi_nomnomnom(t_philo *philo)
 
 void	*phi_mimimimimi(t_philo *philo)
 {
-	if (philo->data->stop)
+	if (return_stop(philo->data))
 		return (NULL);
 	if (handle_oof(philo))
 		return (NULL);
 	print(philo, THINKING);
-	if (philo->data->stop)
+	if (return_stop(philo->data))
 		return (NULL);
 	phi_nomnomnom(philo);
-	if (philo->data->stop)
+	if (return_stop(philo->data))
 		return (NULL);
 	if (handle_oof(philo))
 		return (NULL);
-	if (philo->data->stop)
+	if (return_stop(philo->data))
 		return (NULL);
 	print(philo, SLEEPING);
 	phi_wait(philo->data->time_to_sleep, philo);

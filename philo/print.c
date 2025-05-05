@@ -6,7 +6,7 @@
 /*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:33:24 by lfiorell          #+#    #+#             */
-/*   Updated: 2025/04/26 14:57:17 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/05/05 15:20:56 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,16 @@ void	print(t_philo *philo, t_philo_state state)
 	if (state == DEAD)
 		philo->data->stop = true;
 	pthread_mutex_unlock(philo->data->print_mutex);
+}
+
+bool	return_stop(t_data *data)
+{
+	bool	stop;
+
+	pthread_mutex_lock(data->print_mutex);
+	stop = data->stop;
+	pthread_mutex_unlock(data->print_mutex);
+	return (stop);
 }
 
 void	print_stupid(char *yellow, char *pink, char *reset)

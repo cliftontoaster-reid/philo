@@ -6,7 +6,7 @@
 /*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:53:38 by lfiorell          #+#    #+#             */
-/*   Updated: 2025/04/26 14:58:03 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/05/05 15:19:55 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,10 @@ long	get_time(t_data *data)
 	gettimeofday(&current, NULL);
 	time = current.tv_sec * 1000;
 	time += current.tv_usec / 1000;
+	pthread_mutex_lock(data->time_mutex);
 	if (data->time == 0)
 		data->time = time;
+	pthread_mutex_unlock(data->time_mutex);
 	return (time - data->time);
 }
 

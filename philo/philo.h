@@ -6,7 +6,7 @@
 /*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 15:22:19 by lfiorell          #+#    #+#             */
-/*   Updated: 2025/04/25 10:43:56 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/05/05 15:21:11 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,5 +135,6 @@ bool				allocate_resources(t_data *data);
 /// @brief Prints the t_data structure in YAML format
 /// @param data A pointer to the data structure
 void				print_data_yaml(t_data *data);
+bool				return_stop(t_data *data);
 
 #endif
