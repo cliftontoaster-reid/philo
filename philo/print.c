@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   print.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
+/*   By: creid <creid@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:33:24 by lfiorell          #+#    #+#             */
-/*   Updated: 2025/05/05 15:20:56 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/05/12 15:29:28 by creid            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void	print(t_philo *philo, t_philo_state state)
 	if (is_d)
 		state = DEAD;
 	str = get_state_string(state);
-	printf("%ld %d %s\n", get_time(philo->data), philo->id, str);
+	printf("%10ld %3d  %s\n", get_time(philo->data), philo->id, str);
 	if (state == DEAD)
 		philo->data->stop = true;
 	pthread_mutex_unlock(philo->data->print_mutex);
