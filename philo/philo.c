@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
+/*   By: creid <creid@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 15:22:22 by lfiorell          #+#    #+#             */
-/*   Updated: 2025/04/26 15:42:59 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/05/12 15:23:20 by creid            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,16 @@ static inline pthread_t	*spawn_philosophers(t_data *data)
 	i = 0;
 	while (i < data->num_philos)
 	{
-		pthread_create(&threads[i], NULL, (void *(*)(void *))philo_routine,
-			data->philos[i]);
+		if (i % 2 == 0)
+			pthread_create(&threads[i], NULL, (void *(*)(void *))philo_routine,
+				data->philos[i]);
+		i++;
+	}
+	while (i < data->num_philos)
+	{
+		if (i % 2 == 1)
+			pthread_create(&threads[i], NULL, (void *(*)(void *))philo_routine,
+				data->philos[i]);
 		i++;
 	}
 	return (threads);
@@ -67,14 +75,14 @@ static inline void	join_and_free(pthread_t *threads, t_data *data)
 
 static inline void	wait_n_print(t_data *data)
 {
-	bool	should_break;
+	bool	owo;
 
 	while (true)
 	{
 		pthread_mutex_lock(data->print_mutex);
-		should_break = (data->dead_people > 0 || data->stop);
+		owo = (data->dead_people > 0 || data->stop);
 		pthread_mutex_unlock(data->print_mutex);
-		if (should_break)
+		if (owo)
 			break ;
 		usleep(100);
 	}
