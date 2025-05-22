@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   worker.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
+/*   By: creid <creid@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 12:02:47 by lfiorell          #+#    #+#             */
-/*   Updated: 2025/05/05 15:24:09 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/05/12 16:11:47 by creid            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ static inline bool	check_max_meals(t_philo *philo)
 
 static void	phi_nomnomnom(t_philo *philo)
 {
-	if (philo->id % 2 == 0)
+	if (philo->id % 2 == 1)
 	{
 		pthread_mutex_lock(philo->left_fork);
 		print(philo, FORK);

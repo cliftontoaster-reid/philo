@@ -6,7 +6,7 @@
 /*   By: creid <creid@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 15:22:22 by lfiorell          #+#    #+#             */
-/*   Updated: 2025/05/12 15:23:20 by creid            ###   ########.fr       */
+/*   Updated: 2025/05/12 15:50:27 by creid            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,8 @@ static inline pthread_t	*spawn_philosophers(t_data *data)
 				data->philos[i]);
 		i++;
 	}
+	usleep(100);
+	i = 0;
 	while (i < data->num_philos)
 	{
 		if (i % 2 == 1)
