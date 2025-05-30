@@ -6,7 +6,7 @@
 /*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:53:38 by lfiorell          #+#    #+#             */
-/*   Updated: 2025/05/05 15:19:55 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/05/30 12:45:31 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ long	phi_wait(long duration, t_philo *philo)
 	elapsed = 0;
 	while (elapsed < duration)
 	{
-		usleep(100);
+		usleep(10);
 		gettimeofday(&current, NULL);
 		elapsed = (current.tv_sec - start.tv_sec) * 1000;
 		elapsed += (current.tv_usec - start.tv_usec) / 1000;
